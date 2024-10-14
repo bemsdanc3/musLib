@@ -1,17 +1,29 @@
 package app
 
 import (
-	"Backend/configs"
-	db2 "Backend/pkg/db"
+	"Backend/internal/delivery/http"
+	"Backend/internal/repository"
+	"Backend/internal/usecases"
+	"Backend/pkg/db"
+	"github.com/gin-gonic/gin"
+	"log"
 )
 
-func StartServer() {
-	logger := configs.InitLogger()
-
-	database, err := db2.InitDb()
+func Run() {
+	database, err := db.InitDB()
 	if err != nil {
-		logger.Error("failed to connect to database:", err)
+		log.Fatalf("failed to connect to database: %v", err)
 	}
-	defer database.Close()
+	userRepo := repository.NewUserRepository(database)
+	userUsecase := usecases.NewUseCase(userRepo)
 
+	r := gin.Default()
+
+	userHandler := http.NewUserHandler(userUsecase)
+	r.GET("/users", userHandler.GetAllUsers)
+	r.POST("/users", userHandler.CreateUser)
+
+	if err := r.Run(":5002"); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
