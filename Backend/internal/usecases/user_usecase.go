@@ -8,6 +8,7 @@ import (
 type UserUsecase interface {
 	GetAllUsers() ([]*entities.User, error)
 	CreateUSer(user *entities.User) error
+	GetUserByID(id int) (user *entities.User, err error)
 }
 
 type userUsecase struct {
@@ -26,4 +27,8 @@ func (u *userUsecase) GetAllUsers() ([]*entities.User, error) {
 
 func (u *userUsecase) CreateUSer(user *entities.User) error {
 	return u.repo.CreateUSer(user)
+}
+
+func (u *userUsecase) GetUserByID(id int) (user *entities.User, err error) {
+	return u.repo.GetUserByID(id)
 }

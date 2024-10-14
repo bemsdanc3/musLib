@@ -3,11 +3,13 @@ package repository
 import (
 	"Backend/internal/entities"
 	"database/sql"
+	"errors"
 )
 
 type UserRepository interface {
 	GetAllUsers() ([]*entities.User, error)
 	CreateUSer(user *entities.User) error
+	GetUserByID(id int) (user *entities.User, err error)
 }
 
 type userRepository struct {
@@ -44,4 +46,18 @@ func (r *userRepository) CreateUSer(user *entities.User) error {
 	query := `INSERT INTO users (login, email, pass) VALUES (?,?,?)`
 	_, err := r.db.Exec(query, user.Login, user.Email, user.Pass)
 	return err
+}
+
+func (r *userRepository) GetUserByID(id int) (*entities.User, error) {
+	query := `SELECT login, email FROM users WHERE id = ?`
+	user := &entities.User{}
+
+	err := r.db.QueryRow(query, id).Scan(&user.Login, &user.Email)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+	return user, nil
 }
