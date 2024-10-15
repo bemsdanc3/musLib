@@ -33,3 +33,12 @@ func (h *TrackHandler) GetTracksByUserID(c *gin.Context) {
 	}
 	c.JSON(200, tracks)
 }
+
+func (h *TrackHandler) GetAllTracks(c *gin.Context) {
+	tracks, err := h.usecase.GetAllTracks()
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, tracks)
+}
