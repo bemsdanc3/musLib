@@ -41,7 +41,6 @@ func (r *trackRepository) GetTracksByUserID(userID int) ([]*entities.Track, erro
 		return nil, errors.New("no tracks found for this user")
 	}
 	return tracks, nil
-}
 
 func (r *trackRepository) GetAllTracks() ([]*entities.Track, error) {
 	query := `SELECT id, title, description, userid, uploaddate, filelink FROM tracks`
