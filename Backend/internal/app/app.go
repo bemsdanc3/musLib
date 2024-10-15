@@ -32,6 +32,7 @@ func Run() {
 	//инициализация путей треков
 	trackHandler := http.NewTrackHandler(trackUsecase)
 	r.GET("/users/:id/tracks", trackHandler.GetTracksByUserID)
+	r.GET("/tracks", trackHandler.GetAllTracks)
 
 	if err := r.Run(":5002"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
