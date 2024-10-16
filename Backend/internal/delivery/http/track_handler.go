@@ -1,17 +1,18 @@
 package http
 
 import (
+	"Backend/internal/entities"
 	"Backend/internal/usecases"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
 
 type TrackHandler struct {
-	usecase usecases.TrackUsecase
+	trackUsecase usecases.TrackUsecase
 }
 
-func NewTrackHandler(usecase usecases.TrackUsecase) *TrackHandler {
-	return &TrackHandler{usecase: usecase}
+func NewTrackHandler(trackUsecase usecases.TrackUsecase) *TrackHandler {
+	return &TrackHandler{trackUsecase: trackUsecase}
 }
 
 func (h *TrackHandler) GetTracksByUserID(c *gin.Context) {
@@ -22,7 +23,7 @@ func (h *TrackHandler) GetTracksByUserID(c *gin.Context) {
 		return
 	}
 
-	tracks, err := h.usecase.GetTracksByUserID(userID)
+	tracks, err := h.trackUsecase.GetTracksByUserID(userID)
 	if err != nil {
 		if err.Error() == "no tracks found for this user" {
 			c.JSON(404, gin.H{"error": "No tracks found for this user"})
@@ -35,10 +36,24 @@ func (h *TrackHandler) GetTracksByUserID(c *gin.Context) {
 }
 
 func (h *TrackHandler) GetAllTracks(c *gin.Context) {
-	tracks, err := h.usecase.GetAllTracks()
+	tracks, err := h.trackUsecase.GetAllTracks()
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(200, tracks)
+}
+
+func (h *TrackHandler) CreateTrack(c *gin.Context) {
+	var track entities.Track
+	if err := c.ShouldBindJSON(&track); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.trackUsecase.CreateTrack(&track); err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(201, gin.H{"message": "Track created successfully!"})
 }
