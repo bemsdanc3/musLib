@@ -34,7 +34,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	}
 
 	if err := h.usecase.CreateUSer(&user); err != nil {
-		c.JSON(500, gin.H{"erro": err.Error()})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(201, gin.H{"message": "User created successfully!"})

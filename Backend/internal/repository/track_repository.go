@@ -66,7 +66,7 @@ func (r *trackRepository) GetAllTracks() ([]*entities.Track, error) {
 }
 
 func (r *trackRepository) CreateTrack(track *entities.Track) error {
-	query := `INSERT INTO tracks (title, descritption, uploaddate, filelink) VALUES (?, ?, ?, ?)`
-	_, err := r.db.Exec(query, track.Title, track.Description, track.UploadDate, track.FileLink)
+	query := `INSERT INTO tracks (title, description, userid, filelink) VALUES (?, ?, ?, ?)`
+	_, err := r.db.Exec(query, track.Title, track.Description, track.UserID, track.FileLink)
 	return err
 }
