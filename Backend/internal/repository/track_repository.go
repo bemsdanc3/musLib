@@ -9,6 +9,8 @@ import (
 type TrackRepository interface {
 	GetTracksByUserID(userID int) ([]*entities.Track, error)
 	GetAllTracks() ([]*entities.Track, error)
+	CreateTrack(track *entities.Track) error
+	//TODO: написать пост запрос о создании трека и ещё что то, я забыл уже(((
 }
 
 type trackRepository struct {
@@ -41,6 +43,7 @@ func (r *trackRepository) GetTracksByUserID(userID int) ([]*entities.Track, erro
 		return nil, errors.New("no tracks found for this user")
 	}
 	return tracks, nil
+}
 
 func (r *trackRepository) GetAllTracks() ([]*entities.Track, error) {
 	query := `SELECT id, title, description, userid, uploaddate, filelink FROM tracks`
@@ -60,4 +63,10 @@ func (r *trackRepository) GetAllTracks() ([]*entities.Track, error) {
 		tracks = append(tracks, track)
 	}
 	return tracks, nil
+}
+
+func (r *trackRepository) CreateTrack(track *entities.Track) error {
+	query := `INSERT INTO tracks (title, descritption, uploaddate, filelink) VALUES (?, ?, ?, ?)`
+	_, err := r.db.Exec(query, track.Title, track.Description, track.UploadDate, track.FileLink)
+	return err
 }

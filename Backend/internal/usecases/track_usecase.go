@@ -8,6 +8,7 @@ import (
 type TrackUsecase interface {
 	GetTracksByUserID(userID int) ([]*entities.Track, error)
 	GetAllTracks() ([]*entities.Track, error)
+	CreateTrack(track *entities.Track) error
 }
 
 type trackUsecase struct {
@@ -24,4 +25,8 @@ func (t *trackUsecase) GetTracksByUserID(userID int) ([]*entities.Track, error) 
 
 func (t *trackUsecase) GetAllTracks() ([]*entities.Track, error) {
 	return t.repo.GetAllTracks()
+}
+
+func (t *trackUsecase) CreateTrack(track *entities.Track) error {
+	return t.repo.CreateTrack(track)
 }
